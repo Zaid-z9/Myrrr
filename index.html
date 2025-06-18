@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're Almost There, Myriam! 🌸</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffe4ec, #ffd6e8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      color: #a33a72;
+      overflow-x: hidden;
+    }
+
+    .container {
+      padding: 2rem 1rem;
+      max-width: 480px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #countdown {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: #c2185b;
+    }
+
+    button {
+      padding: 0.9rem 1.7rem;
+      font-size: 1rem;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+      z-index: 10;
+    }
+
+    button:hover {
+      background-color: #ff85c1;
+      transform: scale(1.05);
+    }
+
+    .message {
+      display: none;
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: #8e005f;
+    }
+
+    canvas, .sparkle, .my-text {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    @keyframes floatText {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translateY(-4rem) scale(1.2); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>You're Almost There, Myriam! 🌷</h1>
+    <p>Just one more step — you've got this!</p>
+    <div id="countdown">Loading...</div>
+    <button onclick="burstConfetti()">7amas boost 🎉</button>
+    <div id="celebration-message" class="message">✨ The sun is shining brighter for you today, Myriam! 🌞</div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    const now = new Date();
+    const target = new Date();
+    target.setHours(14, 0, 0, 0);
+    if (target <= now) target.setDate(target.getDate() + 1);
+
+    function updateCountdown() {
+      const diff = target - new Date();
+      const cd = document.getElementById("countdown");
+      if (diff <= 0) {
+        cd.textContent = "🎉 It's over, Myriam! You did it!";
+        document.getElementById("celebration-message").style.display = 'block';
+        burstConfetti(80);
+        return;
+      }
+      const hrs = Math.floor(diff / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      cd.textContent = `${hrs}h ${mins}m ${secs}s left`;
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    const canvas = document.getElementById("confetti-canvas");
+    const ctx = canvas.getContext("2d");
+    let confetti = [];
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function burstConfetti(count = 80) {
+      for (let i = 0; i < count; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          r: Math.random() * 6 + 4,
+          c: `hsl(${Math.random() * 60 + 300}, 100%, 85%)`,
+          s: Math.random() * 2 + 1,
+          a: Math.random() * 2 * Math.PI,
+          d: Math.random() * 0.05
+        });
+      }
+      for (let i = 0; i < 8; i++) spawnMyyriaamm();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((p, i) => {
+        p.y += p.s;
+        p.x += Math.sin(p.a);
+        p.a += p.d;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+        ctx.fillStyle = p.c;
+        ctx.fill();
+        if (p.y > canvas.height) confetti[i] = { ...p, y: -10, x: Math.random() * canvas.width };
+      });
+      requestAnimationFrame(animateConfetti);
+    }
+    animateConfetti();
+
+    function spawnMyyriaamm() {
+      const span = document.createElement('span');
+      span.className = 'my-text';
+      span.textContent = 'Myyriaamm';
+      Object.assign(span.style, {
+        position: 'fixed',
+        left: Math.random() * 80 + 'vw',
+        top: Math.random() * 60 + 20 + 'vh',
+        fontSize: '1rem',
+        color: '#e75480',
+        fontWeight: 'bold',
+        zIndex: '10',
+        animation: 'floatText 2s ease-out forwards',
+        pointerEvents: 'none'
+      });
+      document.body.appendChild(span);
+      setTimeout(() => span.remove(), 2000);
+    }
+  </script>
+</body>
+</html>
